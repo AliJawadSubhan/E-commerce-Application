@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1071935575350",
+    "project_id": "newfavauth",
+    "storage_bucket": "newfavauth.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1071935575350:android:520d217284c5efb34a0f97",
+        "android_client_info": {
+          "package_name": "com.example.firebasetest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1071935575350-52qc613neh772f46n7i95irl77dmccct.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ_s4-k-uYzCq4E5w0EUWl2tFADL7xbKQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1071935575350-52qc613neh772f46n7i95irl77dmccct.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
