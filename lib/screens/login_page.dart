@@ -1,43 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebasetest/screens/dashboard_page.dart';
+import 'package:firebasetest/screens/register_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'home_page.dart';
-import 'login.dart';
+import '../custom_widgets/custom_textfield.dart';
 
-class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<Register> createState() => _RegisterState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterState extends State<Register> {
+class _LoginPageState extends State<LoginPage> {
   var emailcontroller = TextEditingController();
-
   var passwordcontroller = TextEditingController();
 
-  var usernamecontroller = TextEditingController();
+  userLogin() async {
+    var email = emailcontroller.text;
+    var password = passwordcontroller.text;
+    try {
+      UserCredential user = await FirebaseAuth.instance
+          .signInWithEmailAndPassword(email: email, password: password);
 
-  register() async {
-    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: emailcontroller.text.trim(),
-      password: passwordcontroller.text.trim(),
-    );
-    addUserDetail(
-        email: emailcontroller.text.trim(),
-        username: usernamecontroller.text.trim());
-  }
-
-  Future addUserDetail({required email, required username}) async {
-    await FirebaseFirestore.instance.collection('users').add({
-      'email': email,
-      'username': username,
-    });
+      Navigator.pushNamed(context, '/dashboard');
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -51,7 +42,7 @@ class _RegisterState extends State<Register> {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Hello again!
-                Icon(
+                const Icon(
                   Icons.phone_android,
                   size: 85,
                 ),
@@ -59,7 +50,7 @@ class _RegisterState extends State<Register> {
                   height: 12,
                 ),
                 Text(
-                  "Hello!",
+                  "Hello Again!",
                   style: GoogleFonts.bebasNeue(fontSize: 54),
                 ),
                 const SizedBox(
@@ -93,11 +84,6 @@ class _RegisterState extends State<Register> {
                 const SizedBox(
                   height: 10,
                 ),
-                CustomTextfield(
-                  text: "Username",
-                  controller: usernamecontroller,
-                  obscure: false,
-                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20.0,
@@ -105,15 +91,7 @@ class _RegisterState extends State<Register> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      register();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) {
-                            return HomePage();
-                          }),
-                        ),
-                      );
+                      userLogin();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -125,7 +103,7 @@ class _RegisterState extends State<Register> {
                           padding: EdgeInsets.symmetric(
                               vertical: 17.0, horizontal: 15),
                           child: Text(
-                            'Register',
+                            'Login',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -137,18 +115,25 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
                 const SizedBox(
-                  height: 6,
+                  height: 10,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const Text(
+                      "Not yet a member? ",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     TextButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/register');
                       },
                       child: const Text(
-                        "I'm a member? ",
+                        " Register now.",
                         style: TextStyle(
+                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

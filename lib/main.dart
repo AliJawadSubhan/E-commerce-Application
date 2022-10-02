@@ -1,8 +1,10 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebasetest/firebase_options.dart';
-import 'package:firebasetest/main_pages.dart';
-import 'package:firebasetest/login.dart';
-import 'package:firebasetest/home_page.dart';
+import 'package:firebasetest/screens/cart_page.dart';
+
+import 'package:firebasetest/screens/login_page.dart';
+import 'package:firebasetest/screens/dashboard_page.dart';
+import 'package:firebasetest/screens/register_page.dart';
 import 'package:flutter/material.dart';
 
 // import 'dart:io';
@@ -19,9 +21,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
+      initialRoute: '/',
+      routes: {
+        '/': (context) => const LoginPage(),
+        '/register': (context) => const Register(),
+        '/dashboard': (context) => const Dashboard(),
+        '/cart': (context) => Cart()
+      },
       debugShowCheckedModeBanner: false,
-      home: LoginPage(),
     );
   }
 }

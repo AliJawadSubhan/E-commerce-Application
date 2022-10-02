@@ -1,33 +1,44 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebasetest/home_page.dart';
-import 'package:firebasetest/register.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/foundation/key.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+import '../custom_widgets/custom_textfield.dart';
+
+class Register extends StatefulWidget {
+  const Register({Key? key}) : super(key: key);
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _RegisterState extends State<Register> {
   var emailcontroller = TextEditingController();
 
   var passwordcontroller = TextEditingController();
 
-  Future login() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: emailcontroller.text.trim(),
-      password: passwordcontroller.text,
-    );
-  }
+  var usernamecontroller = TextEditingController();
 
-  @override
-  void dispose() {
-    emailcontroller.dispose();
-    passwordcontroller.dispose();
-    super.dispose();
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+  userRegister() async {
+    var email = emailcontroller.text;
+    var password = passwordcontroller.text;
+    var username = usernamecontroller.text;
+    try {
+      UserCredential user = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      firestore.collection('users').doc(user.user!.uid).set({
+        'email': email,
+        'usernam': username,
+      });
+      Navigator.pushNamed(context, '/dashboard');
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -41,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
               // mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // Hello again!
-                Icon(
+                const Icon(
                   Icons.phone_android,
                   size: 85,
                 ),
@@ -49,14 +60,14 @@ class _LoginPageState extends State<LoginPage> {
                   height: 12,
                 ),
                 Text(
-                  "Hello Again!",
+                  "Hello!",
                   style: GoogleFonts.bebasNeue(fontSize: 54),
                 ),
                 const SizedBox(
                   height: 12,
                 ),
                 const Text(
-                  "Welcome back, dear!",
+                  "Please Buy From us!",
                   style: TextStyle(
                     fontSize: 28,
                   ),
@@ -83,6 +94,11 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(
                   height: 10,
                 ),
+                CustomTextfield(
+                  text: "Username",
+                  controller: usernamecontroller,
+                  obscure: false,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20.0,
@@ -90,15 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   child: GestureDetector(
                     onTap: () {
-                      login();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: ((context) {
-                            return HomePage();
-                          }),
-                        ),
-                      );
+                      userRegister();
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -110,7 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                           padding: EdgeInsets.symmetric(
                               vertical: 17.0, horizontal: 15),
                           child: Text(
-                            'Login',
+                            'Register',
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 20,
@@ -122,32 +130,18 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 6,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      "Not yet a member? ",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: ((context) {
-                              return Register();
-                            }),
-                          ),
-                        );
+                        Navigator.pop(context);
                       },
                       child: const Text(
-                        " Register now.",
+                        "I'm a member? ",
                         style: TextStyle(
-                          color: Colors.blue,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -158,44 +152,6 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class CustomTextfield extends StatelessWidget {
-  CustomTextfield({
-    required this.text,
-    required this.controller,
-    required this.obscure,
-    Key? key,
-  }) : super(key: key);
-  final String text;
-  final controller;
-  bool obscure;
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 15.0,
-        vertical: 5,
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: obscure,
-        decoration: InputDecoration(
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.white),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.deepPurple),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            border: InputBorder.none,
-            hintText: text,
-            filled: true,
-            fillColor: Colors.white),
       ),
     );
   }
